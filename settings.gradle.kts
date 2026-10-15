@@ -22,6 +22,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "AcademiaUnifor"
+rootProject.name = "academiaUNIFOR"
 include(":app")
- 
