@@ -17,7 +17,7 @@ class ProfileBannerBackgroundView @JvmOverloads constructor(
 ) : View(context, attrs) {
 
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = Color.parseColor("#387DF8")
+        color = Color.parseColor("#387EF8")
         strokeWidth = 1.5f
         style = Paint.Style.STROKE
         strokeCap = Paint.Cap.ROUND
@@ -42,27 +42,69 @@ class ProfileBannerBackgroundView @JvmOverloads constructor(
         super.onDraw(canvas)
         canvas.save()
 
-        // Normalize coordinate system to reference 360 x 305
-        canvas.scale(width / 360f, height / 305f)
+        // Uniform scaling based on width 360dp so circles remain perfectly circular (not oval)
+        val scale = width / 360f
+        canvas.scale(scale, scale)
 
-        // 1. TOP-LEFT: Circle and Downward Triangle
-        canvas.drawCircle(62f, 75f, 28f, paint)
-        line(canvas, 34f, 115f, 90f, 115f, 62f, 140f, 34f, 115f)
+        // ==========================================
+        // 1. TOP-LEFT: Perfect Circle and Downward Triangle (beneath back button)
+        // ==========================================
+        // Circle (cx=62, cy=86, r=24) - fully circular, no oval distortion
+        canvas.drawCircle(62f, 86f, 24f, paint)
 
-        // 2. TOP-RIGHT: Arch, Chevron and Line
-        line(canvas, 222f, 22f, 252f, 0f, 292f, 0f, 322f, 22f, 222f, 22f)
-        rectF.set(220f, 32f, 324f, 136f)
+        // Inverted triangle beneath the circle
+        path.reset()
+        path.moveTo(40f, 122f)
+        path.lineTo(84f, 122f)
+        path.lineTo(62f, 144f)
+        path.close()
+        canvas.drawPath(path, paint)
+
+        // ==========================================
+        // 2. TOP-RIGHT: Semicircle Arch, Baseline and Roof
+        // ==========================================
+        rectF.set(224f, 26f, 324f, 126f)
         canvas.drawArc(rectF, 180f, 180f, false, paint)
-        line(canvas, 220f, 84f, 324f, 84f)
+        line(canvas, 224f, 76f, 324f, 76f)
 
-        // 3. MIDDLE-LEFT: Two Upward Triangles/Chevrons
-        line(canvas, 0f, 240f, 22f, 240f, 62f, 270f, 0f, 270f)
-        line(canvas, 0f, 215f, 18f, 202f, 62f, 238f, 18f, 238f)
+        path.reset()
+        path.moveTo(224f, 26f)
+        path.lineTo(256f, 8f)
+        path.lineTo(292f, 8f)
+        path.lineTo(324f, 26f)
+        canvas.drawPath(path, paint)
 
+        // ==========================================
+        // 3. MIDDLE-LEFT: Two Clean Upward-pointing Triangles
+        // ==========================================
+        path.reset()
+        path.moveTo(0f, 230f)
+        path.lineTo(34f, 202f)
+        path.lineTo(68f, 230f)
+        path.close()
+        canvas.drawPath(path, paint)
+
+        path.reset()
+        path.moveTo(0f, 268f)
+        path.lineTo(34f, 240f)
+        path.lineTo(68f, 268f)
+        path.close()
+        canvas.drawPath(path, paint)
+
+        // ==========================================
         // 4. MIDDLE-RIGHT: Left-pointing Arrow Chevrons
-        line(canvas, 360f, 155f, 290f, 200f, 360f, 245f)
-        line(canvas, 360f, 178f, 322f, 200f, 360f, 222f)
-        line(canvas, 360f, 255f, 315f, 280f, 360f, 305f)
+        // ==========================================
+        path.reset()
+        path.moveTo(360f, 150f)
+        path.lineTo(295f, 190f)
+        path.lineTo(360f, 230f)
+        canvas.drawPath(path, paint)
+
+        path.reset()
+        path.moveTo(360f, 220f)
+        path.lineTo(315f, 250f)
+        path.lineTo(360f, 280f)
+        canvas.drawPath(path, paint)
 
         canvas.restore()
     }
