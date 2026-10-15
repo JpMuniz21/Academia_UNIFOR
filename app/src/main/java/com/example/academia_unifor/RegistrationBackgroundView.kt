@@ -10,14 +10,14 @@ import android.util.AttributeSet
 import android.view.View
 
 /**
- * Geometric background decorations exactly matching the Academia UNIFOR mobile mockups.
+ * Geometric background decorations exactly matching the original Academia UNIFOR design.
  */
 class RegistrationBackgroundView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null
 ) : View(context, attrs) {
 
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = Color.parseColor("#416592")
+        color = Color.parseColor("#426593")
         strokeWidth = 1.5f
         style = Paint.Style.STROKE
         strokeCap = Paint.Cap.ROUND
@@ -42,71 +42,137 @@ class RegistrationBackgroundView @JvmOverloads constructor(
         super.onDraw(canvas)
         canvas.save()
 
-        // Normalize coordinate system to reference 360 x 780
-        canvas.scale(width / 360f, height / 780f)
+        // Uniform scaling based on reference width 360dp to keep perfect circles and proportions
+        val scale = width / 360f
+        canvas.scale(scale, scale)
 
         // ==========================================
-        // 1. TOP-LEFT: Circle and Downward Triangle
+        // 1. TOP-LEFT: Perfect Circle and Downward Triangle (below back button)
         // ==========================================
-        // Circle (x=62, y=88, r=30)
-        canvas.drawCircle(62f, 88f, 30f, paint)
-        // Downward triangle right beneath the circle
-        line(canvas, 32f, 132f, 92f, 132f, 62f, 160f, 32f, 132f)
+        // Circle (cx=62, cy=74, r=26)
+        canvas.drawCircle(62f, 74f, 26f, paint)
+
+        // Clean inverted triangle directly below the circle
+        path.reset()
+        path.moveTo(38f, 114f)
+        path.lineTo(86f, 114f)
+        path.lineTo(62f, 138f)
+        path.close()
+        canvas.drawPath(path, paint)
 
         // ==========================================
-        // 2. TOP-RIGHT: Arch, Chevron and Line
+        // 2. TOP-RIGHT: Semicircle Arch, Baseline and Roof
         // ==========================================
-        // Chevron/cap at top-right
-        line(canvas, 222f, 22f, 252f, 0f, 292f, 0f, 322f, 22f, 222f, 22f)
         // Semicircular dome arch
-        rectF.set(220f, 32f, 324f, 136f)
+        rectF.set(224f, 26f, 324f, 126f)
         canvas.drawArc(rectF, 180f, 180f, false, paint)
-        // Horizontal baseline beneath arch
-        line(canvas, 220f, 84f, 324f, 84f)
+        // Horizontal baseline of the arch
+        line(canvas, 224f, 76f, 324f, 76f)
+        // Roof chevron above the dome
+        path.reset()
+        path.moveTo(224f, 26f)
+        path.lineTo(256f, 8f)
+        path.lineTo(292f, 8f)
+        path.lineTo(324f, 26f)
+        canvas.drawPath(path, paint)
 
         // ==========================================
-        // 3. MIDDLE-LEFT: Two Upward Triangles/Chevrons
+        // 3. MIDDLE-LEFT: Two Clean Upward-pointing Triangles
         // ==========================================
-        // Lower triangle
-        line(canvas, 0f, 290f, 24f, 290f, 68f, 322f, 0f, 322f)
-        line(canvas, 0f, 290f, 14f, 290f, 0f, 300f)
-        // Upper triangle
-        line(canvas, 0f, 262f, 20f, 248f, 68f, 288f, 20f, 288f)
+        // Upper triangle pointing UP
+        path.reset()
+        path.moveTo(0f, 248f)
+        path.lineTo(36f, 216f)
+        path.lineTo(72f, 248f)
+        path.close()
+        canvas.drawPath(path, paint)
+
+        // Lower triangle pointing UP directly beneath it
+        path.reset()
+        path.moveTo(0f, 290f)
+        path.lineTo(36f, 258f)
+        path.lineTo(72f, 290f)
+        path.close()
+        canvas.drawPath(path, paint)
 
         // ==========================================
         // 4. MIDDLE-RIGHT: Left-pointing Arrow Chevrons
         // ==========================================
-        // Large upper left-pointing arrow
-        line(canvas, 360f, 155f, 285f, 205f, 360f, 255f)
-        line(canvas, 360f, 180f, 320f, 205f, 360f, 230f)
+        // Upper left-pointing arrow
+        path.reset()
+        path.moveTo(360f, 160f)
+        path.lineTo(290f, 205f)
+        path.lineTo(360f, 250f)
+        canvas.drawPath(path, paint)
+
         // Lower left-pointing chevron
-        line(canvas, 360f, 275f, 310f, 305f, 360f, 335f)
+        path.reset()
+        path.moveTo(360f, 240f)
+        path.lineTo(315f, 270f)
+        path.lineTo(360f, 300f)
+        canvas.drawPath(path, paint)
 
         // ==========================================
-        // 5. LOWER-CENTER: Vertical Double-Ended Arrow / Hourglass
+        // 5. LOWER-CENTER: Vertical Double-Ended Arrow (Hourglass without crossing circle)
         // ==========================================
-        // Top arrow pointing UP
-        line(canvas, 142f, 502f, 191f, 465f, 240f, 502f, 142f, 502f)
-        // Curved waist brackets ( )
-        rectF.set(150f, 492f, 232f, 572f)
-        canvas.drawArc(rectF, 65f, 50f, false, paint)
-        canvas.drawArc(rectF, 245f, 50f, false, paint)
-        // Bottom arrow pointing DOWN
-        line(canvas, 142f, 542f, 240f, 542f, 191f, 579f, 142f, 542f)
+        val cx = 180f
+        val topApexY = 445f
+        val topBaseY = 485f
+        val halfBaseW = 40f
+        val bottomBaseY = 545f
+        val bottomApexY = 585f
+
+        // Top triangle (pointing UP)
+        path.reset()
+        path.moveTo(cx, topApexY)
+        path.lineTo(cx + halfBaseW, topBaseY)
+        path.lineTo(cx - halfBaseW, topBaseY)
+        path.close()
+        canvas.drawPath(path, paint)
+
+        // Bottom triangle (pointing DOWN)
+        path.reset()
+        path.moveTo(cx - halfBaseW, bottomBaseY)
+        path.lineTo(cx + halfBaseW, bottomBaseY)
+        path.lineTo(cx, bottomApexY)
+        path.close()
+        canvas.drawPath(path, paint)
+
+        // Smooth curved waist brackets connecting the two triangle bases
+        // Left curve (
+        path.reset()
+        path.moveTo(cx - halfBaseW, topBaseY)
+        path.quadTo(cx - halfBaseW - 14f, (topBaseY + bottomBaseY) / 2f, cx - halfBaseW, bottomBaseY)
+        canvas.drawPath(path, paint)
+
+        // Right curve )
+        path.reset()
+        path.moveTo(cx + halfBaseW, topBaseY)
+        path.quadTo(cx + halfBaseW + 14f, (topBaseY + bottomBaseY) / 2f, cx + halfBaseW, bottomBaseY)
+        canvas.drawPath(path, paint)
 
         // ==========================================
-        // 6. BOTTOM-LEFT: Large Circle with Dual Horizontal Bars
+        // 6. BOTTOM-LEFT: Large Circle with Single Horizontal Line
         // ==========================================
-        rectF.set(-60f, 560f, 120f, 740f)
-        canvas.drawOval(rectF, paint)
-        line(canvas, 0f, 642f, 120f, 642f)
-        line(canvas, 0f, 664f, 120f, 664f)
+        canvas.drawCircle(45f, 680f, 62f, paint)
+        line(canvas, 0f, 680f, 107f, 680f)
 
         // ==========================================
-        // 7. BOTTOM-RIGHT: Bowtie / Facing Triangles
+        // 7. BOTTOM-RIGHT: Opposing Triangles (Bowtie)
         // ==========================================
-        line(canvas, 312f, 546f, 344f, 590f, 344f, 546f, 360f, 560f)
-        line(canvas, 312f, 546f, 312f, 644f, 344f, 600f, 344f, 644f, 360f, 630f)
+        path.reset()
+        path.moveTo(310f, 550f)
+        path.lineTo(345f, 585f)
+        path.lineTo(310f, 620f)
+        path.close()
+        canvas.drawPath(path, paint)
+
+        path.reset()
+        path.moveTo(360f, 550f)
+        path.lineTo(325f, 585f)
+        path.lineTo(360f, 620f)
+        path.close()
+        canvas.drawPath(path, paint)
 
         canvas.restore()
     }
