@@ -4,12 +4,12 @@
     <string name="avancar">Avançar</string>
 
     <!-- 1. Tela de Introdução / Onboarding -->
-    <string name="intro_title">Antes de começar,\nprecisamos conhecer\num pouco mais sobre\n<font color="#1F6FFF">você.</font></string>
+    <string name="intro_title">Antes de começar,\nprecisamos conhecer\num pouco mais sobre\n<font color="#414BFA">você.</font></string>
     <string name="intro_description">Responda algumas perguntas rápidas sobre sua saúde e rotina. Suas respostas são importantes para ajudarmos a tornar seus treinos mais seguros e adequados para você.</string>
     
     <!-- 2. Tela de Termos de Consentimento -->
     <string name="termos_title">Para prosseguir, concorde com\nnossos termos</string>
-    <string name="termos_checkbox_text">Declaro que li e compreendi as perguntas acima e respondi com total veracidade. Entendo que, se respondi <font color="#1F6FFF">\"SIM\"</font> a qualquer questão, devo procurar um médico antes de iniciar qualquer atividade física.</string>
+    <string name="termos_checkbox_text">Declaro que li e compreendi as perguntas acima e respondi com total veracidade. Entendo que, se respondi <font color="#414BFA">\"SIM\"</font> a qualquer questão, devo procurar um médico antes de iniciar qualquer atividade física.</string>
     <string name="termos_progress_value">50%</string>
 
     <!-- 3. Tela de Altura -->
