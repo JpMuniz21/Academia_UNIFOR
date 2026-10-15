@@ -15,6 +15,8 @@
     <!-- 3. Tela de Altura -->
     <string name="altura_title">E qual é a sua altura,\nLucas?</string>
     <string name="altura_current">1,70 m</string>
+    <string name="altura_selected_value">%1$s m</string>
+    <string name="altura_picker_accessibility">Altura selecionada: %1$s metros. Deslize para cima ou para baixo para alterar.</string>
     <string name="altura_168">1,68</string>
     <string name="altura_169">1,69</string>
     <string name="altura_171">1,71</string>

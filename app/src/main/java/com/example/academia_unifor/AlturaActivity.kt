@@ -12,6 +12,19 @@ import androidx.core.view.WindowInsetsControllerCompat
 
 class AlturaActivity : AppCompatActivity() {
 
+    companion object {
+        const val EXTRA_HEIGHT_CM = "com.example.academia_unifor.HEIGHT_CM"
+        private const val STATE_HEIGHT_CM = "height_cm"
+        private const val DEFAULT_HEIGHT_CM = 170
+        private const val MIN_HEIGHT_CM = 100
+        private const val MAX_HEIGHT_CM = 250
+
+        fun formatHeight(cm: Int): String =
+            "${cm / 100},${(cm % 100).toString().padStart(2, '0')}"
+    }
+
+    private var selectedHeightCm = DEFAULT_HEIGHT_CM
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -28,17 +41,32 @@ class AlturaActivity : AppCompatActivity() {
             insets
         }
 
+        selectedHeightCm = (savedInstanceState?.getInt(STATE_HEIGHT_CM) ?: DEFAULT_HEIGHT_CM)
+            .coerceIn(MIN_HEIGHT_CM, MAX_HEIGHT_CM)
+        setupHeightWheel()
+
         findViewById<ImageButton>(R.id.back_button).setOnClickListener {
             onBackPressedDispatcher.onBackPressed()
         }
-
         findViewById<AppCompatButton>(R.id.button_voltar).setOnClickListener {
             onBackPressedDispatcher.onBackPressed()
         }
-
         findViewById<AppCompatButton>(R.id.button_avancar).setOnClickListener {
             val intent = Intent(this, PerfilActivity::class.java)
+                .putExtra(EXTRA_HEIGHT_CM, selectedHeightCm)
             startActivity(intent)
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putInt(STATE_HEIGHT_CM, selectedHeightCm)
+        super.onSaveInstanceState(outState)
+    }
+
+    private fun setupHeightWheel() {
+        findViewById<HeightWheelView>(R.id.height_picker_container).apply {
+            onHeightChanged = { this@AlturaActivity.selectedHeightCm = it }
+            setHeightCm(this@AlturaActivity.selectedHeightCm)
         }
     }
 }

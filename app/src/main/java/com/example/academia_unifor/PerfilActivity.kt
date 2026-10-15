@@ -3,6 +3,7 @@ package com.example.academia_unifor
 import android.os.Bundle
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -17,6 +18,14 @@ class PerfilActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_perfil)
+
+        if (intent.hasExtra(AlturaActivity.EXTRA_HEIGHT_CM)) {
+            val heightCm = intent.getIntExtra(AlturaActivity.EXTRA_HEIGHT_CM, 170)
+            findViewById<TextView>(R.id.text_altura_value).text = getString(
+                R.string.altura_selected_value,
+                AlturaActivity.formatHeight(heightCm)
+            )
+        }
 
         WindowInsetsControllerCompat(window, window.decorView).apply {
             isAppearanceLightStatusBars = false
