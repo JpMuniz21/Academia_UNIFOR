@@ -17,14 +17,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Back Button -->
+    <!-- Standard Back Button matching project conventions -->
     <ImageButton
         android:id="@+id/back_button"
-        android:layout_width="44dp"
-        android:layout_height="44dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="36dp"
-        android:background="@drawable/circle_back_button_bg"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="32dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
         android:contentDescription="@string/back"
         android:src="@drawable/back_arrow"
         app:layout_constraintStart_toStartOf="parent"
@@ -52,7 +52,7 @@
             android:lineSpacingExtra="3dp"
             android:text="@string/intro_title"
             android:textColor="#FFFFFF"
-            android:textSize="22sp"
+            android:textSize="20sp"
             android:textStyle="bold" />
 
         <!-- Subtitle description -->
@@ -60,21 +60,21 @@
             android:id="@+id/intro_description_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="28dp"
             android:gravity="center"
             android:lineSpacingExtra="4dp"
             android:text="@string/intro_description"
-            android:textColor="#D1D5DB"
+            android:textColor="#CBD2DC"
             android:textSize="14sp" />
     </LinearLayout>
 
-    <!-- Bottom Buttons: Voltar & Avançar -->
+    <!-- Bottom Buttons: Voltar & Avançar matching project standards -->
     <LinearLayout
         android:id="@+id/buttons_container"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="24dp"
-        android:layout_marginBottom="44dp"
+        android:layout_marginBottom="40dp"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -83,20 +83,20 @@
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/button_voltar"
             android:layout_width="0dp"
-            android:layout_height="52dp"
+            android:layout_height="54dp"
             android:layout_marginEnd="8dp"
             android:layout_weight="1"
             android:background="@drawable/btn_voltar_bg"
             android:text="@string/back"
             android:textAllCaps="false"
-            android:textColor="#102A83"
+            android:textColor="#2D238D"
             android:textSize="14sp"
             android:textStyle="bold" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/button_avancar"
             android:layout_width="0dp"
-            android:layout_height="52dp"
+            android:layout_height="54dp"
             android:layout_marginStart="8dp"
             android:layout_weight="1"
             android:background="@drawable/btn_avancar_bg"

@@ -33,14 +33,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <!-- Back button -->
+                <!-- Standard Back button -->
                 <ImageButton
                     android:id="@+id/back_button"
-                    android:layout_width="44dp"
-                    android:layout_height="44dp"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="36dp"
-                    android:background="@drawable/circle_back_button_bg"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginTop="32dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
                     android:contentDescription="@string/back"
                     android:src="@drawable/back_arrow"
                     app:layout_constraintStart_toStartOf="parent"
@@ -49,10 +49,10 @@
                 <!-- Settings gear icon -->
                 <ImageButton
                     android:id="@+id/button_settings"
-                    android:layout_width="44dp"
-                    android:layout_height="44dp"
-                    android:layout_marginTop="36dp"
-                    android:layout_marginEnd="16dp"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginTop="32dp"
+                    android:layout_marginEnd="12dp"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:contentDescription="Configurações"
                     android:src="@drawable/ic_settings"
@@ -99,7 +99,7 @@
                     android:layout_marginTop="10dp"
                     android:text="@string/perfil_name"
                     android:textColor="#FFFFFF"
-                    android:textSize="21sp"
+                    android:textSize="20sp"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -352,18 +352,18 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <!-- Bottom Salvar Button -->
+            <!-- Bottom Salvar Button matching project standards -->
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/button_salvar"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="54dp"
                 android:layout_marginTop="28dp"
                 android:layout_marginBottom="12dp"
                 android:background="@drawable/btn_salvar_bg"
                 android:text="@string/salvar"
                 android:textAllCaps="false"
                 android:textColor="#FFFFFF"
-                android:textSize="15sp"
+                android:textSize="14sp"
                 android:textStyle="bold" />
 
         </LinearLayout>
