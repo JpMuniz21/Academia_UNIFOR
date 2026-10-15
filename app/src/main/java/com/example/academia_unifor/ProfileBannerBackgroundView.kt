@@ -15,7 +15,7 @@ class ProfileBannerBackgroundView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null
 ) : View(context, attrs) {
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = Color.parseColor("#3874E8")
+        color = Color.parseColor("#2E6CE3")
         strokeWidth = 1.0f
         style = Paint.Style.STROKE
     }
@@ -31,22 +31,23 @@ class ProfileBannerBackgroundView @JvmOverloads constructor(
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         canvas.save()
-        canvas.scale(width / 350f, height / 300f)
+        canvas.scale(width / 350f, height / 305f)
 
-        // Top right arc and horizontal lines
-        canvas.drawArc(222f, 15f, 316f, 105f, 180f, 180f, false, paint)
-        line(canvas, 222f, 60f, 316f, 60f)
+        // Top left: circle and downward triangle
+        canvas.drawCircle(58f, 54f, 26f, paint)
+        line(canvas, 32f, 96f, 84f, 96f, 58f, 118f, 32f, 96f)
 
-        // Top left circle and triangle
-        canvas.drawCircle(65f, 48f, 28f, paint)
-        line(canvas, 37f, 95f, 93f, 95f, 65f, 120f, 37f, 95f)
+        // Top right: arc, chevron and horizontal line
+        line(canvas, 223f, 19f, 250f, 0f, 289f, 0f, 315f, 19f, 223f, 19f)
+        canvas.drawArc(222f, 31f, 316f, 117f, 180f, 180f, false, paint)
+        line(canvas, 222f, 74f, 316f, 74f)
 
-        // Left chevrons
-        line(canvas, 0f, 220f, 22f, 205f, 60f, 240f, 20f, 240f, 60f, 275f, 0f, 275f)
+        // Middle left: triangles/chevrons
+        line(canvas, 0f, 240f, 19f, 227f, 69f, 264f, 25f, 264f, 69f, 298f, 0f, 298f)
 
-        // Right chevrons / arrows
-        line(canvas, 350f, 130f, 315f, 150f, 350f, 170f)
-        line(canvas, 350f, 180f, 325f, 200f, 350f, 220f)
+        // Middle right: left-pointing arrows
+        line(canvas, 350f, 160f, 315f, 185f, 350f, 210f)
+        line(canvas, 350f, 230f, 320f, 255f, 350f, 280f)
 
         canvas.restore()
     }

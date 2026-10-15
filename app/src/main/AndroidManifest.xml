@@ -22,18 +22,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".CompletionActivity" android:exported="false" />
-        <activity android:name=".SurgeryActivity" android:exported="false" android:windowSoftInputMode="adjustResize" />
-        <activity android:name=".HabitsActivity" android:exported="false" />
-        <activity android:name=".PainActivity" android:exported="false" android:windowSoftInputMode="adjustResize" />
-        <activity android:name=".InjuryActivity" android:exported="false" android:windowSoftInputMode="adjustResize" />
-        <activity android:name=".ExperienceActivity" android:exported="false" />
-        <activity android:name=".InactivityActivity" android:exported="false" android:windowSoftInputMode="adjustResize" />
-        <activity android:name=".FrequencyActivity" android:exported="false" />
-        <activity android:name=".ReasonActivity" android:exported="false" />
-        <activity
-            android:name=".MainActivity"
-            android:exported="true" />
     </application>
 
 </manifest>
