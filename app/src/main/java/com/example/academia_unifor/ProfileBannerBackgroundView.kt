@@ -5,49 +5,64 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Path
+import android.graphics.RectF
 import android.util.AttributeSet
 import android.view.View
 
 /**
- * Geometric background decorations for the Profile top curved card.
+ * Geometric background decorations for the Profile top curved card matching mockup.
  */
 class ProfileBannerBackgroundView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null
 ) : View(context, attrs) {
+
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = Color.parseColor("#2E6CE3")
-        strokeWidth = 1.0f
+        color = Color.parseColor("#387DF8")
+        strokeWidth = 1.5f
         style = Paint.Style.STROKE
+        strokeCap = Paint.Cap.ROUND
+        strokeJoin = Paint.Join.ROUND
     }
 
+    private val path = Path()
+    private val rectF = RectF()
+
     private fun line(canvas: Canvas, vararg points: Float) {
-        val path = Path().apply {
-            moveTo(points[0], points[1])
-            for (i in 2 until points.size step 2) lineTo(points[i], points[i + 1])
+        path.reset()
+        if (points.size >= 2) {
+            path.moveTo(points[0], points[1])
+            for (i in 2 until points.size step 2) {
+                path.lineTo(points[i], points[i + 1])
+            }
+            canvas.drawPath(path, paint)
         }
-        canvas.drawPath(path, paint)
     }
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         canvas.save()
-        canvas.scale(width / 350f, height / 305f)
 
-        // Top left: circle and downward triangle
-        canvas.drawCircle(58f, 54f, 26f, paint)
-        line(canvas, 32f, 96f, 84f, 96f, 58f, 118f, 32f, 96f)
+        // Normalize coordinate system to reference 360 x 305
+        canvas.scale(width / 360f, height / 305f)
 
-        // Top right: arc, chevron and horizontal line
-        line(canvas, 223f, 19f, 250f, 0f, 289f, 0f, 315f, 19f, 223f, 19f)
-        canvas.drawArc(222f, 31f, 316f, 117f, 180f, 180f, false, paint)
-        line(canvas, 222f, 74f, 316f, 74f)
+        // 1. TOP-LEFT: Circle and Downward Triangle
+        canvas.drawCircle(62f, 75f, 28f, paint)
+        line(canvas, 34f, 115f, 90f, 115f, 62f, 140f, 34f, 115f)
 
-        // Middle left: triangles/chevrons
-        line(canvas, 0f, 240f, 19f, 227f, 69f, 264f, 25f, 264f, 69f, 298f, 0f, 298f)
+        // 2. TOP-RIGHT: Arch, Chevron and Line
+        line(canvas, 222f, 22f, 252f, 0f, 292f, 0f, 322f, 22f, 222f, 22f)
+        rectF.set(220f, 32f, 324f, 136f)
+        canvas.drawArc(rectF, 180f, 180f, false, paint)
+        line(canvas, 220f, 84f, 324f, 84f)
 
-        // Middle right: left-pointing arrows
-        line(canvas, 350f, 160f, 315f, 185f, 350f, 210f)
-        line(canvas, 350f, 230f, 320f, 255f, 350f, 280f)
+        // 3. MIDDLE-LEFT: Two Upward Triangles/Chevrons
+        line(canvas, 0f, 240f, 22f, 240f, 62f, 270f, 0f, 270f)
+        line(canvas, 0f, 215f, 18f, 202f, 62f, 238f, 18f, 238f)
+
+        // 4. MIDDLE-RIGHT: Left-pointing Arrow Chevrons
+        line(canvas, 360f, 155f, 290f, 200f, 360f, 245f)
+        line(canvas, 360f, 178f, 322f, 200f, 360f, 222f)
+        line(canvas, 360f, 255f, 315f, 280f, 360f, 305f)
 
         canvas.restore()
     }
