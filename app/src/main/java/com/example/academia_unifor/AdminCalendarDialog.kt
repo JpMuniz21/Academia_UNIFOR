@@ -1,49 +1,110 @@
 package com.example.academia_unifor
 
 import android.app.Dialog
-import android.annotation.SuppressLint
-import android.content.res.Configuration
+import android.graphics.Color
 import android.os.Bundle
-import android.view.ContextThemeWrapper
+import android.view.Gravity
 import android.view.ViewGroup
-import android.widget.CalendarView
+import android.view.Window
+import android.widget.GridLayout
+import android.widget.FrameLayout
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatDialog
 import androidx.appcompat.app.AppCompatDialogFragment
-import java.util.Calendar
+import androidx.core.content.res.ResourcesCompat
+import androidx.core.graphics.drawable.toDrawable
+import java.time.LocalDate
+import java.time.YearMonth
+import java.time.format.DateTimeFormatter
 import java.util.Locale
 
-/** Calendar presentation matching the September 2026 sample shown on page 43. */
+/** Calendar drawn with native Views to keep the reference's square blue date markers. */
 class AdminCalendarDialog : AppCompatDialogFragment() {
-    // Only a framework CalendarView is localized; app resources/locales do not change.
-    @SuppressLint("AppBundleLocaleChanges")
+    private var month = YearMonth.of(2026, 9)
+
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val configuration = Configuration(resources.configuration).apply {
-            setLocale(Locale.forLanguageTag("pt-BR"))
+        month = savedInstanceState?.getString(STATE_MONTH)?.let(YearMonth::parse) ?: month
+        val content = layoutInflater.inflate(R.layout.dialog_admin_calendar, FrameLayout(requireContext()), false)
+        content.contentDescription = getString(R.string.admin_calendar)
+        val grid = content.findViewById<GridLayout>(R.id.calendar_days)
+        val label = content.findViewById<TextView>(R.id.calendar_month)
+        content.findViewById<TextView>(R.id.previous_month).setOnClickListener {
+            month = month.minusMonths(1)
+            renderMonth(grid, label)
         }
-        val localizedContext = requireContext().createConfigurationContext(configuration)
-        val calendarContext = ContextThemeWrapper(localizedContext, R.style.AdminCalendarTheme)
-        val referenceDate = Calendar.getInstance().apply { set(2026, Calendar.SEPTEMBER, 29, 12, 0, 0) }
-        val calendar = CalendarView(calendarContext).apply {
-            contentDescription = getString(R.string.admin_calendar)
-            firstDayOfWeek = Calendar.SUNDAY
-            date = referenceDate.timeInMillis
-            setOnDateChangeListener { _, _, _, _ -> dismiss() }
+        content.findViewById<TextView>(R.id.next_month).setOnClickListener {
+            month = month.plusMonths(1)
+            renderMonth(grid, label)
         }
-        // Keep the Activity's window token; the localized context is only for the view.
+        renderMonth(grid, label)
         return AppCompatDialog(requireActivity(), R.style.AdminCalendarTheme).apply {
-            setContentView(calendar, ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
+            supportRequestWindowFeature(Window.FEATURE_NO_TITLE)
+            setContentView(content)
+        }
+    }
+
+    private fun renderMonth(grid: GridLayout, label: TextView) {
+        val locale = Locale.forLanguageTag("pt-BR")
+        label.text = month.format(DateTimeFormatter.ofPattern("MMMM yyyy", locale))
+            .replaceFirstChar { it.titlecase(locale) }
+        grid.removeAllViews()
+        for (initial in resources.getStringArray(R.array.admin_calendar_weekdays)) {
+            grid.addView(dayCell(initial).apply { isClickable = false })
+        }
+        val offset = month.atDay(1).dayOfWeek.value % 7
+        val first = month.atDay(1).minusDays(offset.toLong())
+        repeat(42) { index ->
+            val date = first.plusDays(index.toLong())
+            grid.addView(dayCell(date.dayOfMonth.toString()).apply {
+                contentDescription = date.format(DateTimeFormatter.ofPattern("d 'de' MMMM 'de' yyyy", locale))
+                val selected = date == LocalDate.of(2026, 9, 29)
+                val highlighted = date == LocalDate.of(2026, 9, 25)
+                setTextColor(when {
+                    selected || highlighted -> Color.WHITE
+                    date.month != month.month -> Color.LTGRAY
+                    else -> Color.DKGRAY
+                })
+                if (selected || highlighted) {
+                    setBackgroundResource(R.drawable.admin_calendar_selected)
+                    if (highlighted) background.mutate().setTint(Color.rgb(0, 174, 246))
+                }
+                isFocusable = true
+                setOnClickListener { dismiss() }
+            })
+        }
+    }
+
+    private fun dayCell(label: String) = TextView(requireContext()).apply {
+        text = label
+        textSize = 12f
+        typeface = ResourcesCompat.getFont(context, R.font.poppins_regular)
+        gravity = Gravity.CENTER
+        setTextColor(Color.DKGRAY)
+        layoutParams = GridLayout.LayoutParams().apply {
+            width = 0
+            height = (36 * resources.displayMetrics.density).toInt()
+            columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f)
         }
     }
 
     override fun onStart() {
         super.onStart()
-        val width = resources.displayMetrics.widthPixels
-        val margin = (56 * resources.displayMetrics.density).toInt()
-        val maxWidth = (480 * resources.displayMetrics.density).toInt()
-        dialog?.window?.setLayout(minOf(width - margin, maxWidth), ViewGroup.LayoutParams.WRAP_CONTENT)
+        dialog?.window?.apply {
+            setBackgroundDrawable(Color.WHITE.toDrawable())
+            setLayout(
+                minOf(resources.displayMetrics.widthPixels - 2 * resources.getDimensionPixelSize(R.dimen.admin_gutter), (400 * resources.displayMetrics.density).toInt()),
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putString(STATE_MONTH, month.toString())
+        super.onSaveInstanceState(outState)
     }
 
     companion object {
         internal const val TAG = "admin_calendar"
+        private const val STATE_MONTH = "month"
     }
 }

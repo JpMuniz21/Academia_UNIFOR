@@ -15,18 +15,18 @@
             android:name=".FeedAdministradorActivity"
             android:exported="true"
             android:label="@string/admin_feed_label"
-            android:theme="@style/Theme.Academiaunifor.Admin" />
-        <activity android:name=".PerfilActivity" android:exported="true" />
-        <activity android:name=".AlturaActivity" android:exported="true" />
-        <activity android:name=".TermosActivity" android:exported="true" />
-        <activity
-            android:name=".IntroActivity"
-            android:exported="true">
+            android:theme="@style/Theme.Academiaunifor.Admin">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".PerfilActivity" android:exported="true" />
+        <activity android:name=".AlturaActivity" android:exported="true" />
+        <activity android:name=".TermosActivity" android:exported="true" />
+        <activity
+            android:name=".IntroActivity"
+            android:exported="true" />
     </application>
 
 </manifest>

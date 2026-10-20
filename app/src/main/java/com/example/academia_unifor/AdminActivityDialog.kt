@@ -1,14 +1,13 @@
 package com.example.academia_unifor
 
 import android.graphics.Color
-import android.graphics.Rect
 import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import android.widget.ArrayAdapter
+import android.widget.EditText
 import android.widget.PopupWindow
 import android.widget.TextView
 import androidx.annotation.ArrayRes
@@ -20,89 +19,69 @@ import androidx.core.graphics.drawable.toDrawable
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
-import com.example.academia_unifor.databinding.DialogAdminActivityBinding
 
-/** Expanded activity and add-activity panels, with presentation-only selectors. */
+/** Compact activity panels, anchored in the same positions as the reference images. */
 class AdminActivityDialog : AppCompatDialogFragment() {
-    private var viewBinding: DialogAdminActivityBinding? = null
-    private var selectorPopup: ListPopupWindow? = null
-    private val createMode: Boolean get() = arguments?.getBoolean(ARG_CREATE) == true
+    private var panel: View? = null
+    private var selector: ListPopupWindow? = null
+    private val createMode get() = arguments?.getBoolean(ARG_CREATE) == true
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, state: Bundle?): View {
-        return DialogAdminActivityBinding.inflate(inflater, container, false).also {
-            viewBinding = it
-        }.root
-    }
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, state: Bundle?): View =
+        inflater.inflate(R.layout.dialog_admin_activity, container, false).also { panel = it }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val binding = viewBinding ?: return
-        binding.root.clipToOutline = true
-        val preview = AdminActivityPreview.entries.firstOrNull {
+        view.clipToOutline = true
+        val sample = AdminActivityPreview.entries.firstOrNull {
             it.name == arguments?.getString(ARG_PREVIEW)
         } ?: AdminActivityPreview.FUNCTIONAL
-        binding.apply {
-            heading.setText(if (createMode) R.string.admin_add_activity_heading else R.string.admin_next_activity)
-            title.apply {
-                isFocusable = createMode
-                isFocusableInTouchMode = createMode
-                isCursorVisible = createMode
-                if (createMode) {
-                    setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.admin_ic_edit, 0)
-                    compoundDrawablePadding = dp(8)
-                    layoutParams = (layoutParams as ConstraintLayout.LayoutParams).apply {
-                        width = ViewGroup.LayoutParams.WRAP_CONTENT
-                        constrainedWidth = true
-                        horizontalBias = 0f
-                    }
-                } else {
-                    setText(preview.title)
-                }
-            }
-            time.setText(if (createMode) R.string.admin_time else preview.time)
-            stats.students.setText(if (createMode) R.string.admin_placeholder else preview.students)
-            stats.duration.setText(if (createMode) R.string.admin_placeholder else R.string.admin_one_hour)
-            stats.room.setText(if (createMode) R.string.admin_placeholder else preview.room)
-            teacher.setText(preview.teacher)
-            teacher.isVisible = !createMode
-            teacherSelector.setText(if (createMode) R.string.admin_add_teacher else R.string.admin_substitute_teacher)
-            capacity.setText(preview.capacity)
-            capacity.isVisible = !createMode
-            capacitySelector.isVisible = createMode
-            cancel.setText(if (createMode) R.string.admin_cancel else R.string.admin_cancel_activity)
-            primaryAction.setText(if (createMode) R.string.admin_add_activity else R.string.admin_collapse_activity)
-            // Buttons only transition back to the feed, without changing its sample data.
-            cancel.setOnClickListener { dismiss() }
-            primaryAction.setOnClickListener { dismiss() }
-            teacherSelector.setOnClickListener {
-                showSelector(teacherSelector, R.array.admin_teachers)
-            }
-            statusSelector.setOnClickListener {
-                showSelector(statusSelector, R.array.admin_statuses)
-            }
-            capacitySelector.setOnClickListener {
-                showSelector(capacitySelector, R.array.admin_capacities)
-            }
-            if (createMode) {
-                time.isClickable = true
-                time.isFocusable = true
-                time.setOnClickListener {
-                    showSelector(time, R.array.admin_times, openCalendar = true)
-                }
-                // The visual time badge retains a minimum 48dp interaction area.
-                time.post {
-                    val bounds = Rect()
-                    time.getHitRect(bounds)
-                    val inset = ((dp(48) - bounds.height()) / 2).coerceAtLeast(0)
-                    bounds.inset(0, -inset)
-                    (time.parent as View).touchDelegate = android.view.TouchDelegate(bounds, time)
-                }
-            }
-            savedInstanceState?.let { state ->
-                teacherSelector.text = state.getCharSequence(STATE_TEACHER, teacherSelector.text)
-                capacitySelector.text = state.getCharSequence(STATE_CAPACITY, capacitySelector.text)
-                statusSelector.text = state.getCharSequence(STATE_STATUS, statusSelector.text)
-                time.text = state.getCharSequence(STATE_TIME, time.text)
+        val title = view.findViewById<EditText>(R.id.title)
+        val displayTitle = view.findViewById<TextView>(R.id.activity_title)
+        val time = view.findViewById<TextView>(R.id.time)
+        val teacher = view.findViewById<TextView>(R.id.teacher)
+        val capacity = view.findViewById<TextView>(R.id.capacity)
+        val teacherSelector = view.findViewById<TextView>(R.id.teacher_selector)
+        val capacitySelector = view.findViewById<TextView>(R.id.capacity_selector)
+        val statusSelector = view.findViewById<TextView>(R.id.status_selector)
+        view.findViewById<TextView>(R.id.heading).setText(
+            if (createMode) R.string.admin_add_activity_heading else R.string.admin_next_activity
+        )
+        title.isVisible = createMode
+        displayTitle.isVisible = !createMode
+        (time.layoutParams as ConstraintLayout.LayoutParams).apply {
+            startToEnd = if (createMode) R.id.title else R.id.activity_title
+        }
+        displayTitle.setText(sample.title)
+        title.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.admin_ic_edit, 0)
+        time.setText(if (createMode) R.string.admin_time else sample.time)
+        val stats = view.findViewById<View>(R.id.stats)
+        stats.findViewById<TextView>(R.id.students).setText(if (createMode) R.string.admin_placeholder else sample.students)
+        stats.findViewById<TextView>(R.id.duration).setText(if (createMode) R.string.admin_placeholder else R.string.admin_one_hour)
+        stats.findViewById<TextView>(R.id.room).setText(if (createMode) R.string.admin_placeholder else sample.room)
+        teacher.setText(sample.teacher)
+        teacher.isVisible = !createMode
+        capacity.setText(sample.capacity)
+        capacity.isVisible = !createMode
+        capacitySelector.isVisible = createMode
+        teacherSelector.setText(if (createMode) R.string.admin_add_teacher else R.string.admin_substitute_teacher)
+        val cancel = view.findViewById<TextView>(R.id.cancel)
+        cancel.setText(if (createMode) R.string.admin_cancel else R.string.admin_cancel_activity)
+        cancel.setOnClickListener { dismiss() }
+        val primary = view.findViewById<TextView>(R.id.primary_action)
+        primary.setText(if (createMode) R.string.admin_add_activity else R.string.admin_collapse_activity)
+        primary.setOnClickListener { dismiss() }
+        teacherSelector.setOnClickListener { showSelector(teacherSelector, R.array.admin_teachers) }
+        capacitySelector.setOnClickListener { showSelector(capacitySelector, R.array.admin_capacities) }
+        statusSelector.setOnClickListener { showSelector(statusSelector, R.array.admin_statuses) }
+        if (createMode) {
+            time.isClickable = true
+            time.isFocusable = true
+            time.setOnClickListener { showSelector(time, R.array.admin_times, calendar = true) }
+        }
+        savedInstanceState?.let { state ->
+            for (id in SELECTOR_IDS) {
+                val field = view.findViewById<TextView>(id)
+                field.text = state.getCharSequence(id.toString(), field.text)
             }
         }
     }
@@ -110,36 +89,48 @@ class AdminActivityDialog : AppCompatDialogFragment() {
     override fun onStart() {
         super.onStart()
         val window = dialog?.window ?: return
+        val view = panel ?: return
         val metrics = resources.displayMetrics
-        val insets = ViewCompat.getRootWindowInsets(requireActivity().window.decorView)
+        val bars = ViewCompat.getRootWindowInsets(requireActivity().window.decorView)
             ?.getInsets(WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout())
-        val availableWidth = metrics.widthPixels - (insets?.left ?: 0) - (insets?.right ?: 0)
+        val gutter = resources.getDimensionPixelSize(R.dimen.admin_gutter)
+        val width = minOf(metrics.widthPixels - (bars?.left ?: 0) - (bars?.right ?: 0) - gutter * 2, dp(480))
+        val navigation = arguments?.getInt(ARG_NAVIGATION) ?: dp(56)
+        val anchor = arguments?.getInt(ARG_ANCHOR, -1) ?: -1
+        val top = if (!createMode && anchor >= 0) (anchor - (bars?.top ?: 0)).coerceAtLeast(0) else 0
+        val height = metrics.heightPixels - (bars?.top ?: 0) - (bars?.bottom ?: 0) - navigation - top - dp(8)
+        view.measure(
+            View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY),
+            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+        )
         window.setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
-        window.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
         window.setDimAmount(0.6f)
-        window.setLayout(minOf(availableWidth - dp(56), dp(480)), ViewGroup.LayoutParams.WRAP_CONTENT)
-        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+        window.setLayout(width, minOf(view.measuredHeight, height.coerceAtLeast(dp(120))))
         window.attributes = window.attributes.apply {
-            gravity = if (createMode) Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL else Gravity.CENTER
-            if (createMode) y = dp(84)
+            gravity = when {
+                createMode -> Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL
+                anchor >= 0 -> Gravity.TOP or Gravity.CENTER_HORIZONTAL
+                else -> Gravity.CENTER
+            }
+            y = if (createMode) navigation + dp(8) else top
             windowAnimations = R.style.AdminPanelAnimation
         }
     }
 
-    private fun showSelector(anchor: TextView, @ArrayRes choices: Int, openCalendar: Boolean = false) {
-        selectorPopup?.dismiss()
+    private fun showSelector(anchor: TextView, @ArrayRes choices: Int, calendar: Boolean = false) {
+        selector?.dismiss()
         val options = resources.getStringArray(choices)
-        selectorPopup = ListPopupWindow(requireContext()).apply {
+        selector = ListPopupWindow(requireContext()).apply {
             setAdapter(ArrayAdapter(requireContext(), R.layout.admin_popup_item, options))
             anchorView = anchor
-            width = maxOf(anchor.width, dp(164))
+            width = maxOf(anchor.width, dp(120))
             isModal = true
             inputMethodMode = PopupWindow.INPUT_METHOD_NOT_NEEDED
             setBackgroundDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.admin_popup_background))
             setOnItemClickListener { _, _, position, _ ->
                 anchor.text = options[position]
                 dismiss()
-                if (openCalendar && childFragmentManager.findFragmentByTag(AdminCalendarDialog.TAG) == null) {
+                if (calendar && childFragmentManager.findFragmentByTag(AdminCalendarDialog.TAG) == null) {
                     AdminCalendarDialog().show(childFragmentManager, AdminCalendarDialog.TAG)
                 }
             }
@@ -148,38 +139,37 @@ class AdminActivityDialog : AppCompatDialogFragment() {
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        viewBinding?.let {
-            outState.putCharSequence(STATE_TEACHER, it.teacherSelector.text)
-            outState.putCharSequence(STATE_CAPACITY, it.capacitySelector.text)
-            outState.putCharSequence(STATE_STATUS, it.statusSelector.text)
-            outState.putCharSequence(STATE_TIME, it.time.text)
+        panel?.let { root ->
+            for (id in SELECTOR_IDS) outState.putCharSequence(id.toString(), root.findViewById<TextView>(id).text)
         }
         super.onSaveInstanceState(outState)
     }
 
     override fun onDestroyView() {
-        selectorPopup?.dismiss()
-        selectorPopup = null
-        viewBinding = null
+        selector?.dismiss()
+        selector = null
+        panel = null
         super.onDestroyView()
     }
 
-    private fun dp(value: Int): Int = (value * resources.displayMetrics.density).toInt()
+    private fun dp(value: Int) = (value * resources.displayMetrics.density).toInt()
 
     companion object {
         internal const val TAG = "admin_activity_panel"
         private const val ARG_CREATE = "create"
         private const val ARG_PREVIEW = "preview"
-        private const val STATE_TEACHER = "teacher"
-        private const val STATE_CAPACITY = "capacity"
-        private const val STATE_STATUS = "status"
-        private const val STATE_TIME = "time"
+        private const val ARG_ANCHOR = "anchor"
+        private const val ARG_NAVIGATION = "navigation"
+        private val SELECTOR_IDS = intArrayOf(R.id.teacher_selector, R.id.capacity_selector, R.id.status_selector, R.id.time)
 
-        internal fun newInstance(preview: AdminActivityPreview, create: Boolean) = AdminActivityDialog().apply {
-            arguments = Bundle().apply {
-                putBoolean(ARG_CREATE, create)
-                putString(ARG_PREVIEW, preview.name)
+        internal fun newInstance(sample: AdminActivityPreview, create: Boolean, anchor: Int, navigation: Int) =
+            AdminActivityDialog().apply {
+                arguments = Bundle().apply {
+                    putBoolean(ARG_CREATE, create)
+                    putString(ARG_PREVIEW, sample.name)
+                    putInt(ARG_ANCHOR, anchor)
+                    putInt(ARG_NAVIGATION, navigation)
+                }
             }
-        }
     }
 }
