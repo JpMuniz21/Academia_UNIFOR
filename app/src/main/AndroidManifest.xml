@@ -11,6 +11,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Academiaunifor">
+        <activity
+            android:name=".FeedAdministradorActivity"
+            android:exported="true"
+            android:label="@string/admin_feed_label"
+            android:theme="@style/Theme.Academiaunifor.Admin" />
         <activity android:name=".PerfilActivity" android:exported="true" />
         <activity android:name=".AlturaActivity" android:exported="true" />
         <activity android:name=".TermosActivity" android:exported="true" />

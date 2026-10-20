@@ -1,0 +1,10 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Feed Administrador" type="AndroidRunConfigurationType" factoryName="Android App">
+    <module name="academia-unifor.app.main" />
+    <option name="MODE" value="specific_activity" />
+    <option name="ACTIVITY_CLASS" value="com.example.academia_unifor.FeedAdministradorActivity" />
+    <option name="DEPLOY" value="true" />
+    <option name="CLEAR_LOGCAT" value="false" />
+    <method v="2"><option name="Android.Gradle.BeforeRunTask" enabled="true" /></method>
+  </configuration>
+</component>
