@@ -48,3 +48,7 @@ Com JDK 21:
 ```powershell
 .\gradlew.bat :app:assembleDebug :app:lintDebug
 ```
+
+Build e lint executados sem erros. Os arquivos do feed não apresentam avisos
+de lint. As transições de detalhes, professor, vagas, status, horário,
+calendário e retorno foram conferidas em emulador Android API 37.

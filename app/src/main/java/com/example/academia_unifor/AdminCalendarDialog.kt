@@ -1,6 +1,7 @@
 package com.example.academia_unifor
 
 import android.app.Dialog
+import android.annotation.SuppressLint
 import android.content.res.Configuration
 import android.os.Bundle
 import android.view.ContextThemeWrapper
@@ -13,6 +14,8 @@ import java.util.Locale
 
 /** Calendar presentation matching the September 2026 sample shown on page 43. */
 class AdminCalendarDialog : AppCompatDialogFragment() {
+    // Only a framework CalendarView is localized; app resources/locales do not change.
+    @SuppressLint("AppBundleLocaleChanges")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val configuration = Configuration(resources.configuration).apply {
             setLocale(Locale.forLanguageTag("pt-BR"))
@@ -26,7 +29,8 @@ class AdminCalendarDialog : AppCompatDialogFragment() {
             date = referenceDate.timeInMillis
             setOnDateChangeListener { _, _, _, _ -> dismiss() }
         }
-        return AppCompatDialog(calendarContext).apply {
+        // Keep the Activity's window token; the localized context is only for the view.
+        return AppCompatDialog(requireActivity(), R.style.AdminCalendarTheme).apply {
             setContentView(calendar, ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
         }
     }

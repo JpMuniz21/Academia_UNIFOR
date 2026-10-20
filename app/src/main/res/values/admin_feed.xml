@@ -52,7 +52,6 @@
     <string name="admin_add_activity">Adicionar atividade</string>
     <string name="admin_add_activity_heading">Adicionar Atividade</string>
     <string name="admin_title_hint">Título</string>
-    <string name="admin_edit_title">Editar título da atividade</string>
     <string name="admin_time">Horário ＋</string>
     <string name="admin_placeholder">--</string>
     <string name="admin_teacher_label">Professor:</string>
@@ -134,6 +133,12 @@
     </style>
     <style name="AdminCalendarTheme" parent="Theme.Material3.Light.Dialog">
         <item name="colorPrimary">@color/admin_primary</item>
+        <item name="colorSecondary">@color/admin_primary</item>
+        <item name="colorControlActivated">@color/admin_primary</item>
+        <item name="android:colorControlActivated">@color/admin_primary</item>
+        <item name="colorSurface">@color/white</item>
+        <item name="android:colorBackground">@color/white</item>
+        <item name="android:windowBackground">@color/white</item>
         <item name="android:colorAccent">@color/admin_primary</item>
         <item name="android:windowNoTitle">true</item>
     </style>

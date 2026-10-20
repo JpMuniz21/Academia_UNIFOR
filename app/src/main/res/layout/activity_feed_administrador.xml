@@ -5,7 +5,8 @@
     android:id="@+id/feed_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/admin_background"
+    tools:ignore="DuplicateIncludedIds"
+    tools:background="@color/admin_background"
     tools:context=".FeedAdministradorActivity">
 
     <androidx.core.widget.NestedScrollView
@@ -135,6 +136,7 @@
                 android:accessibilityHeading="true"
                 android:text="@string/admin_today" />
 
+            <!-- Each included card is accessed through its own scoped ViewBinding. -->
             <include android:id="@+id/strength_activity" layout="@layout/admin_today_activity" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="24dp" />
             <include android:id="@+id/yoga_activity" layout="@layout/admin_today_activity" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="20dp" />
 

@@ -2,7 +2,6 @@ package com.example.academia_unifor
 
 import android.graphics.Color
 import android.graphics.Rect
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -15,7 +14,9 @@ import android.widget.TextView
 import androidx.annotation.ArrayRes
 import androidx.appcompat.app.AppCompatDialogFragment
 import androidx.appcompat.widget.ListPopupWindow
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.toDrawable
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
@@ -36,6 +37,7 @@ class AdminActivityDialog : AppCompatDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val binding = viewBinding ?: return
+        binding.root.clipToOutline = true
         val preview = AdminActivityPreview.entries.firstOrNull {
             it.name == arguments?.getString(ARG_PREVIEW)
         } ?: AdminActivityPreview.FUNCTIONAL
@@ -47,6 +49,12 @@ class AdminActivityDialog : AppCompatDialogFragment() {
                 isCursorVisible = createMode
                 if (createMode) {
                     setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.admin_ic_edit, 0)
+                    compoundDrawablePadding = dp(8)
+                    layoutParams = (layoutParams as ConstraintLayout.LayoutParams).apply {
+                        width = ViewGroup.LayoutParams.WRAP_CONTENT
+                        constrainedWidth = true
+                        horizontalBias = 0f
+                    }
                 } else {
                     setText(preview.title)
                 }
@@ -106,7 +114,7 @@ class AdminActivityDialog : AppCompatDialogFragment() {
         val insets = ViewCompat.getRootWindowInsets(requireActivity().window.decorView)
             ?.getInsets(WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout())
         val availableWidth = metrics.widthPixels - (insets?.left ?: 0) - (insets?.right ?: 0)
-        window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        window.setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
         window.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
         window.setDimAmount(0.6f)
         window.setLayout(minOf(availableWidth - dp(56), dp(480)), ViewGroup.LayoutParams.WRAP_CONTENT)
